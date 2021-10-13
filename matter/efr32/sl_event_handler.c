@@ -39,12 +39,46 @@ void sl_platform_init(void)
 #if defined(_SILICON_LABS_32B_SERIES_2)
     sl_hfxo_manager_init_hardware();
 #endif
+    // Turn on the HF peripheral bus
+    CMU_ClockEnable(cmuClock_HFPER, true);
 
-    sl_device_init_hfxo();
-    sl_device_init_lfxo();
-    sl_device_init_clocks();
-    sl_device_init_emu();
-    sl_board_init();
+    // Set up the system clock to run off the HFXO.
+    // Set the system clock to a known other source while configuring the HFXO.
+    CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFRCO);
+    // The init struct was copied from the CMU_HFXOINIT_DEFAULT definition and is
+    // duplicated here for visibility and conistency (in case the library's
+    // default changes).
+    CMU_HFXOInit_TypeDef hfxoInit = {
+        false, /* Low-noise mode for EFR32 */
+        false, /* @deprecated no longer in use */
+        false, /* @deprecated no longer in use */
+        false, /* @deprecated no longer in use */
+        _CMU_HFXOSTARTUPCTRL_CTUNE_DEFAULT,
+        267,
+        0xA,  /* Default Shunt steady-state current */
+        0x20, /* Matching errata fix in @ref CHIP_Init() */
+        0x7,  /* Recommended steady-state XO core bias current */
+        0x6,  /* Recommended peak detection threshold */
+        0x2,  /* Recommended shunt optimization timeout */
+        0xA,  /* Recommended peak detection timeout  */
+        0x4,  /* Recommended steady timeout */
+        _CMU_HFXOTIMEOUTCTRL_STARTUPTIMEOUT_DEFAULT,
+        cmuOscMode_Crystal,
+    };
+    CMU_HFXOInit(&hfxoInit);
+    SystemHFXOClockSet(38400000);
+    CMU_OscillatorEnable(cmuOsc_HFXO, true, true);
+    CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFXO);
+    // Turn off the HFRCO now that we aren't using it anymore
+    CMU_OscillatorEnable(cmuOsc_HFRCO, false, false);
+
+    // Initialize the global system clock value
+    SystemCoreClockUpdate();
+    // sl_device_init_hfxo();
+    // sl_device_init_lfxo();
+    // sl_device_init_clocks();
+    // sl_device_init_emu();
+    // sl_board_init();
     osKernelInitialize();
 }
 
@@ -56,8 +90,8 @@ void sl_kernel_start(void)
 void sl_driver_init(void)
 {
     GPIOINT_Init();
-    sl_simple_button_init_instances();
-    sl_simple_led_init_instances();
+    // sl_simple_button_init_instances();
+    // sl_simple_led_init_instances();
     sl_uartdrv_init_instances();
 }
 

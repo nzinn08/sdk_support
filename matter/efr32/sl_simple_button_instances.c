@@ -15,9 +15,8 @@
  *
  ******************************************************************************/
 
+#include "gpioConfigurationDriver.h"
 #include "sl_simple_button.h"
-#include "sl_simple_button_btn0_config.h"
-#include "sl_simple_button_btn1_config.h"
 
 sl_simple_button_context_t simple_btn0_context = {
   .state = 0,

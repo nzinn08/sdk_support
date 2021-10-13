@@ -32,6 +32,8 @@
 
 #include "em_emu.h"
 
+#undef SL_DEVICE_INIT_DCDC_ENABLE 
+
 sl_status_t sl_device_init_dcdc(void)
 {
 #if SL_DEVICE_INIT_DCDC_ENABLE
