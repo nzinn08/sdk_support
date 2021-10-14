@@ -39,6 +39,8 @@ void sl_platform_init(void)
 #if defined(_SILICON_LABS_32B_SERIES_2)
     sl_hfxo_manager_init_hardware();
 #endif
+    // Turn on the HF peripheral bus
+    CMU_ClockEnable(cmuClock_HFPER, true);
 
     sl_device_init_hfxo();
     //sl_device_init_lfxo();
@@ -56,8 +58,8 @@ void sl_kernel_start(void)
 void sl_driver_init(void)
 {
     GPIOINT_Init();
-    sl_simple_button_init_instances();
-    sl_simple_led_init_instances();
+    // sl_simple_button_init_instances();
+    // sl_simple_led_init_instances();
     sl_uartdrv_init_instances();
 }
 
