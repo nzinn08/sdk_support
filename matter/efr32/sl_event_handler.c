@@ -41,7 +41,7 @@ void sl_platform_init(void)
 #endif
 
     sl_device_init_hfxo();
-    sl_device_init_lfxo();
+    //sl_device_init_lfxo();
     sl_device_init_clocks();
     sl_device_init_emu();
     sl_board_init();
