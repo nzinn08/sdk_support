@@ -34,6 +34,7 @@
 
 #include <stdbool.h>
 #include "em_device.h"        /* The correct device header file. */
+#include "LED_EngineDriver.h"
 
 #ifdef BOOTLOADER_ENABLE
 #include "api/btl_interface.h"
@@ -264,7 +265,7 @@ void Reset_Handler(void)
 #ifndef __NO_SYSTEM_INIT
   SystemInit();
 #endif
-
+    
 #ifdef BOOTLOADER_ENABLE
   SystemInit2();
 #endif
